@@ -97,3 +97,25 @@ def test_scrape_errors():
     assert c.post("/scrape", json={"url": "bad.example"}).status_code == 400
     r = c.post("/scrape", json={"url": "claramap.com"})
     assert r.status_code == 200 and r.json()["url"] == "https://claramap.com" and store.rows
+
+
+def test_batch_status_counts_children_apart_from_submitted_urls():
+    store = Store()
+    client = TestClient(create_app(fake_scrape, store.save, get_batch=store.get), raise_server_exceptions=False)
+    b = str(uuid.uuid4())
+    rows = [(1, None, "ok"), (2, None, "queued"), (3, 1, "queued"), (4, 1, "ok"), (5, 1, "error"), (6, 1, "ok"), (7, 2, "queued")]
+    for i, parent, status in rows:
+        store.rows[i] = {"id": i, "parent_id": parent, "url": f"https://r{i}.example", "status": status, "batch_id": b}
+    d = client.get(f"/batch/{b}").json()
+    assert d["counts"] == {"queued": 1, "ok": 1, "error": 0}
+    assert d["children"] == {"queued": 2, "ok": 2, "error": 1, "total": 5}
+    assert [r["id"] for r in d["rows"]] == [1, 2]
+    assert d["rows"][0]["children"] == {"queued": 1, "ok": 2, "error": 1, "total": 4}
+    assert d["rows"][1]["children"] == {"queued": 1, "ok": 0, "error": 0, "total": 1}
+
+
+def test_batch_without_children_reports_zero_children():
+    client, store = make_client()
+    b = client.post("/batch", json={"urls": ["a.example"]}).json()["batch_id"]
+    d = client.get(f"/batch/{b}").json()
+    assert d["children"] == {"queued": 0, "ok": 0, "error": 0, "total": 0}

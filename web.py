@@ -13,6 +13,7 @@ from scraper import normalize_input
 
 log = logging.getLogger(__name__)
 MAX_BATCH = 500
+STATUSES = ("queued", "ok", "error")
 
 PAGE = """<!doctype html><meta charset="utf-8"><title>Scraper</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -113,7 +114,8 @@ function renderRows(rows) {
   rows.forEach((r) => {
     const s = r.signals || {}, tr = el('tr', null, null, body);
     el('td', r.domain || r.url, null, tr);
-    el('td', r.status === 'error' ? 'error: ' + r.error : r.status, null, tr);
+    const k = r.children, st = r.status === 'error' ? 'error: ' + r.error : r.status;
+    el('td', k && k.total ? `${st} · ${k.total} companies (queued ${k.queued} · ok ${k.ok} · error ${k.error})` : st, null, tr);
     el('td', (s.profile || {}).name || '', null, tr);
     el('td', (s.tech || []).join(', '), null, tr);
     const h = s.hiring || {};
@@ -122,13 +124,19 @@ function renderRows(rows) {
   });
   $('batch-table').hidden = false;
 }
+let still = 0, lastKids = null;
 async function poll(id) {
   try {
     const d = await call('/batch/' + id, {headers: headers()});
     const c = d.counts;
-    $('batch-status').textContent = `queued ${c.queued} · ok ${c.ok} · error ${c.error}`;
+    const k = d.children;
+    $('batch-status').textContent = `queued ${c.queued} · ok ${c.ok} · error ${c.error}` +
+      (k && k.total ? ` · companies queued ${k.queued} · ok ${k.ok} · error ${k.error}` : '');
     renderRows(d.rows);
-    if (c.queued > 0) setTimeout(() => poll(id), 1000);
+    // overflow children can stay queued for a long time: stop once nothing has moved for a while
+    const sig = k ? `${k.queued}/${k.ok}/${k.error}` : '';
+    still = sig === lastKids ? still + 1 : 0; lastKids = sig;
+    if (c.queued > 0 || (k && k.queued > 0 && still < 10)) setTimeout(() => poll(id), 1000);
   } catch (err) { $('batch-status').textContent = 'Error: ' + err.message; }
 }
 $('bf').onsubmit = async (e) => {
@@ -137,6 +145,7 @@ $('bf').onsubmit = async (e) => {
   try {
     const d = await call('/batch', {method: 'POST', headers: headers(), body: JSON.stringify({text: $('batch').value})});
     $('batch-status').textContent = `Queued ${d.total} items`;
+    still = 0; lastKids = null;
     poll(d.batch_id);
   } catch (err) { $('batch-status').textContent = 'Error: ' + err.message; }
 };
@@ -227,7 +236,14 @@ def create_app(scrape, save, *, spawn=None, queue_batch=None, get_batch=None) ->
             raise HTTPException(500, "Something went wrong on our side")
         if not rows:
             raise HTTPException(404, "Unknown batch")
-        counts = {k: sum(1 for r in rows if r["status"] == k) for k in ("queued", "ok", "error")}
-        return {"batch_id": batch_id, "counts": counts, "rows": rows}
+        # rows fanned out from an event page carry parent_id; they are counted apart from the submitted URLs
+        top = [r for r in rows if r.get("parent_id") is None]
+        kids = [r for r in rows if r.get("parent_id") is not None]
+        count = lambda rs: {k: sum(1 for r in rs if r["status"] == k) for k in STATUSES}  # noqa: E731
+        for r in top:
+            if r.get("id") is not None:
+                mine = [k for k in kids if k["parent_id"] == r["id"]]
+                r["children"] = count(mine) | {"total": len(mine)}
+        return {"batch_id": batch_id, "counts": count(top), "children": count(kids) | {"total": len(kids)}, "rows": top}
 
     return app

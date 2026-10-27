@@ -7,7 +7,7 @@ import modal
 image = (
     modal.Image.debian_slim()
     .pip_install("fastapi[standard]", "httpx", "supabase")
-    .add_local_python_source("scraper", "storage", "web", "fetch", "htmlparse", "signals", "jobs")
+    .add_local_python_source("scraper", "storage", "web", "fetch", "htmlparse", "signals", "jobs", "eventpage")
 )
 app = modal.App("signals", image=image)
 supabase = modal.Secret.from_name("supabase")

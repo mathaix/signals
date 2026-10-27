@@ -24,12 +24,15 @@ create table if not exists events (
   url            text,
   event_date     date,                           -- gatherings: starts on. funding/earnings/press: announced on. null = undated
   location       text,
+  ends_on        date,                           -- gatherings: last day (null = unknown or single day)
   amount_usd     bigint,                         -- funding only
   round          text,                           -- funding only: 'seed', 'series a', ...
   first_seen_at  timestamptz not null default now(),
   last_seen_at   timestamptz not null default now(),
   last_scrape_id bigint                          -- provenance (FK added below; scrapes is created later)
 );
+
+alter table events add column if not exists ends_on date;  -- databases created before event pages were extracted
 
 create table if not exists people (
   id             bigint generated always as identity primary key,
