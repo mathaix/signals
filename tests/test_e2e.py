@@ -71,3 +71,33 @@ def test_user_scrapes_single_and_batch(site):  # noqa: F811
     finally:
         server.should_exit = True
     assert any(r.get("title") == "Hi" for r in store.rows.values())
+
+
+def test_batch_page_shows_child_counts_of_an_event_page():
+    import uuid
+
+    store = Store()
+    b = str(uuid.uuid4())
+    store.rows[1] = {"id": 1, "parent_id": None, "url": "https://saasexpo.example/2026", "domain": "saasexpo.example",
+                     "status": "ok", "batch_id": b}
+    for i, status in enumerate(["ok", "ok", "error", "queued"], start=2):
+        store.rows[i] = {"id": i, "parent_id": 1, "url": f"https://c{i}.example", "status": status, "batch_id": b}
+    server, port = serve(create_app(fake_scrape, store.save, spawn=lambda *a: None, queue_batch=store.queue, get_batch=store.get))
+    demo = os.environ.get("DEMO_DIR")
+    try:
+        with sync_playwright() as p:
+            br = p.chromium.launch()
+            ctx = br.new_context(record_video_dir=demo) if demo else br.new_context()
+            page = ctx.new_page()
+            page.goto(f"http://127.0.0.1:{port}/")
+            page.evaluate("id => poll(id)", b)
+            page.wait_for_function("document.querySelectorAll('#batch-table tbody tr').length === 1")
+            assert "companies queued 1 · ok 2 · error 1" in page.inner_text("#batch-status")
+            row = page.inner_text("#batch-table tbody")
+            assert "saasexpo.example" in row and "4 companies (queued 1 · ok 2 · error 1)" in row
+            if demo:
+                page.screenshot(path=os.path.join(demo, "event-children.png"), full_page=True)
+            ctx.close()
+            br.close()
+    finally:
+        server.should_exit = True

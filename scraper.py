@@ -2,7 +2,7 @@
 from urllib.parse import urlparse
 
 from fetch import Fetcher, FetchError
-from htmlparse import normalize as _normalize, parse
+from htmlparse import normalize as _normalize, parse, registrable_domain
 from signals import collect
 
 
@@ -44,4 +44,4 @@ def scrape(url: str, fetcher=None, allow_private=False) -> dict:
     }
 
 
-__all__ = ["scrape", "normalize_input", "domain_of", "FetchError", "_normalize"]
+__all__ = ["scrape", "normalize_input", "domain_of", "registrable_domain", "FetchError", "_normalize"]
