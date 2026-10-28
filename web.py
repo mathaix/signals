@@ -17,7 +17,7 @@ MAX_BATCH = 500
 PAGE = """<!doctype html><meta charset="utf-8"><title>Scraper</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{--ink:#1f2340;--muted:#667;--accent:#5b5bf0;--accent2:#9b5cf6;--line:#e3e6f3}
+:root{--ink:#1f2340;--muted:#667;--accent:#0b3d91;--accent2:#061f5c;--line:#e3e6f3}
 *{box-sizing:border-box}
 body{font:15px/1.5 system-ui,sans-serif;margin:0;color:var(--ink);background:#f5f6fc}
 .hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:3rem 1rem 4.5rem;text-align:center}
@@ -34,12 +34,12 @@ button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(91,91,240,.4)
 #url{width:min(100%,28rem)}
 label{color:var(--muted);display:inline-block;margin:.5rem 0}
 p#status,p#batch-status{color:var(--muted);min-height:1.2em}
-.chip{display:inline-block;background:#eceaff;color:#4338ca;border-radius:1rem;padding:.1rem .7rem;margin:.1rem;font-size:.85rem;font-weight:500}
-#result{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:.6rem;padding:0 1rem;margin:1rem 0;background:#fafaff}
+.chip{display:inline-block;background:#e3ebfa;color:#0b3d91;border-radius:1rem;padding:.1rem .7rem;margin:.1rem;font-size:.85rem;font-weight:500}
+#result{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:.6rem;padding:0 1rem;margin:1rem 0;background:#f6f9ff}
 table{border-collapse:separate;border-spacing:0;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:.6rem}
 td,th{padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--line)}
-th{background:#eceaff;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
-tbody tr:nth-child(even){background:#fafaff} tbody tr:last-child td{border-bottom:0}
+th{background:#e3ebfa;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+tbody tr:nth-child(even){background:#f6f9ff} tbody tr:last-child td{border-bottom:0}
 a{color:var(--accent)}
 </style>
 <header class="hero"><h1>Web scraper</h1>
