@@ -1,4 +1,5 @@
 import os
+import re
 import socket
 import threading
 import time
@@ -45,6 +46,11 @@ def test_user_scrapes_single_and_batch(site):  # noqa: F811
             assert page.inner_text(".hero h1") == "Web scraper"
             assert "linear-gradient" in page.eval_on_selector(".hero", "e => getComputedStyle(e).backgroundImage")
             assert page.locator("section.card").count() == 2
+            # deep blue theme: hero gradient is blue-dominant (b > r, b > g), not the old purple
+            for sel, prop in ((".hero", "backgroundImage"), ("#go", "backgroundImage")):
+                css = page.eval_on_selector(sel, f"e => getComputedStyle(e).{prop}")
+                rgbs = [tuple(map(int, m)) for m in re.findall(r"rgb\((\d+), (\d+), (\d+)\)", css)]
+                assert rgbs and all(b > 2 * r and b > g for r, g, b in rgbs), css
             assert page.eval_on_selector("#go", "e => getComputedStyle(e).backgroundImage").startswith("linear-gradient")
             if demo:
                 page.screenshot(path=os.path.join(demo, "landing.png"))

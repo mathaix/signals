@@ -97,3 +97,10 @@ def test_scrape_errors():
     assert c.post("/scrape", json={"url": "bad.example"}).status_code == 400
     r = c.post("/scrape", json={"url": "claramap.com"})
     assert r.status_code == 200 and r.json()["url"] == "https://claramap.com" and store.rows
+
+
+def test_index_uses_deep_blue_theme():
+    app = create_app(fake_scrape, Store().save)
+    html = TestClient(app).get("/").text
+    assert "--accent:#0b3d91" in html and "--accent2:#061f5c" in html
+    assert "#5b5bf0" not in html and "#9b5cf6" not in html
