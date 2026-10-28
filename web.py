@@ -17,14 +17,14 @@ MAX_BATCH = 500
 PAGE = """<!doctype html><meta charset="utf-8"><title>Scraper</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{--ink:#1f2340;--muted:#667;--accent:#5b5bf0;--accent2:#9b5cf6;--line:#e3e6f3}
+:root{--ink:#1f2340;--muted:#667;--accent:#db2777;--accent2:#f472b6;--line:#f5d9e8}
 *{box-sizing:border-box}
-body{font:15px/1.5 system-ui,sans-serif;margin:0;color:var(--ink);background:#f5f6fc}
+body{font:15px/1.5 system-ui,sans-serif;margin:0;color:var(--ink);background:#fdf4f9}
 .hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:3rem 1rem 4.5rem;text-align:center}
 .hero h1{margin:0;font-size:2.4rem;letter-spacing:-.02em}
 .hero p{margin:.5rem auto 0;max-width:36rem;opacity:.9;font-size:1.05rem}
 main{max-width:60rem;margin:-3rem auto 3rem;padding:0 1rem}
-.card{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 6px 24px rgba(40,40,120,.08)}
+.card{background:#fff;border:1px solid var(--line);border-radius:1rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;box-shadow:0 6px 24px rgba(120,20,70,.08)}
 .card h2{margin:0 0 .75rem;font-size:1.15rem}
 input,textarea{font:inherit;border:1px solid var(--line);border-radius:.6rem;padding:.55rem .75rem;max-width:100%}
 input:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
@@ -34,12 +34,12 @@ button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(91,91,240,.4)
 #url{width:min(100%,28rem)}
 label{color:var(--muted);display:inline-block;margin:.5rem 0}
 p#status,p#batch-status{color:var(--muted);min-height:1.2em}
-.chip{display:inline-block;background:#eceaff;color:#4338ca;border-radius:1rem;padding:.1rem .7rem;margin:.1rem;font-size:.85rem;font-weight:500}
-#result{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:.6rem;padding:0 1rem;margin:1rem 0;background:#fafaff}
+.chip{display:inline-block;background:#fce7f3;color:#9d174d;border-radius:1rem;padding:.1rem .7rem;margin:.1rem;font-size:.85rem;font-weight:500}
+#result{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:.6rem;padding:0 1rem;margin:1rem 0;background:#fff7fb}
 table{border-collapse:separate;border-spacing:0;width:100%;overflow:hidden;border:1px solid var(--line);border-radius:.6rem}
 td,th{padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--line)}
-th{background:#eceaff;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
-tbody tr:nth-child(even){background:#fafaff} tbody tr:last-child td{border-bottom:0}
+th{background:#fce7f3;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+tbody tr:nth-child(even){background:#fff7fb} tbody tr:last-child td{border-bottom:0}
 a{color:var(--accent)}
 </style>
 <header class="hero"><h1>Web scraper</h1>
