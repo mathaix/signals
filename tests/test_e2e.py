@@ -46,11 +46,11 @@ def test_user_scrapes_single_and_batch(site):  # noqa: F811
             assert page.inner_text(".hero h1") == "Web scraper"
             assert "linear-gradient" in page.eval_on_selector(".hero", "e => getComputedStyle(e).backgroundImage")
             assert page.locator("section.card").count() == 2
-            # deep blue theme: hero gradient is blue-dominant (b > r, b > g), not the old purple
+            # red theme: hero and button gradients are red-dominant, not the old purple or blue
             for sel, prop in ((".hero", "backgroundImage"), ("#go", "backgroundImage")):
                 css = page.eval_on_selector(sel, f"e => getComputedStyle(e).{prop}")
                 rgbs = [tuple(map(int, m)) for m in re.findall(r"rgb\((\d+), (\d+), (\d+)\)", css)]
-                assert rgbs and all(b > 2 * r and b > g for r, g, b in rgbs), css
+                assert rgbs and all(r > 2 * g and r > 2 * b for r, g, b in rgbs), css
             assert page.eval_on_selector("#go", "e => getComputedStyle(e).backgroundImage").startswith("linear-gradient")
             if demo:
                 page.screenshot(path=os.path.join(demo, "landing.png"))
