@@ -14,7 +14,7 @@ from scraper import normalize_input
 log = logging.getLogger(__name__)
 MAX_BATCH = 500
 
-PAGE = """<!doctype html><meta charset="utf-8"><title>Scraper</title>
+PAGE = """<!doctype html><meta charset="utf-8"><title>Demo scraper</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{--ink:#1f2340;--muted:#667;--accent:#d62828;--accent2:#8f1111;--line:#e3e6f3}
@@ -42,7 +42,7 @@ th{background:#fde8e8;font-size:.8rem;text-transform:uppercase;letter-spacing:.0
 tbody tr:nth-child(even){background:#fff8f8} tbody tr:last-child td{border-bottom:0}
 a{color:var(--accent)}
 </style>
-<header class="hero"><h1>Web scraper</h1>
+<header class="hero"><h1>Demo scraper</h1>
 <p>Turn any company domain into marketing signals: tech stack, hiring and activity.</p></header>
 <main>
 <section class="card">

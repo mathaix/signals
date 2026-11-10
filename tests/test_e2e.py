@@ -43,7 +43,8 @@ def test_user_scrapes_single_and_batch(site):  # noqa: F811
             page = ctx.new_page()
             page.goto(f"http://127.0.0.1:{port}/")
             # landing page is styled: gradient hero, card sections, styled button
-            assert page.inner_text(".hero h1") == "Web scraper"
+            assert page.inner_text(".hero h1") == "Demo scraper"
+            assert page.title() == "Demo scraper"
             assert "linear-gradient" in page.eval_on_selector(".hero", "e => getComputedStyle(e).backgroundImage")
             assert page.locator("section.card").count() == 2
             # red theme: hero and button gradients are red-dominant, not the old purple or blue

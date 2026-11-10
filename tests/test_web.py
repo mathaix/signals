@@ -104,3 +104,8 @@ def test_index_uses_red_theme():
     html = TestClient(app).get("/").text
     assert "--accent:#d62828" in html and "--accent2:#8f1111" in html
     assert "#5b5bf0" not in html and "#9b5cf6" not in html and "#0b3d91" not in html
+
+
+def test_index_title_is_demo_scraper():
+    html = TestClient(create_app(fake_scrape, Store().save)).get("/").text
+    assert "<title>Demo scraper</title>" in html and "<h1>Demo scraper</h1>" in html
